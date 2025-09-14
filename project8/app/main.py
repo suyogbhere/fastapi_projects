@@ -51,3 +51,35 @@ async def create_product(new_product: dict):
     return {"status":"Created","new_proudct":new_product}
 
 
+
+#PUT request
+## update complete Data
+@app.put("/product/{product_id}")
+async def update_product(product_id : int, new_updated_product: dict):
+    for index, product in enumerate(PRODUCTS):
+        if product['id'] == product_id:
+            PRODUCTS[index] = new_updated_product
+            return {"status":"Updated", "product_id" : product_id, "new_updated_product": new_updated_product}
+        
+
+
+
+#PATCH request
+## update partial Data
+@app.put("/product/{product_id}")
+async def partial_product(product_id : int, new_updated_product: dict):
+    for index, product in enumerate(PRODUCTS):
+        if product['id'] == product_id:
+            product.update(new_updated_product)
+            return {"status":"Partial Updated", "product_id" : product_id, "new_updated_product": new_updated_product}
+        
+
+
+#DELETE Request
+## Delete data
+@app.delete("/product/{product_id}")
+async def delete_product(product_id: int):
+    for index, product in enumerate(PRODUCTS):
+        if product["id"] == product_id:
+            PRODUCTS.pop(index)
+            return {"response":"Data Deleted..", "product_id": product_id}
