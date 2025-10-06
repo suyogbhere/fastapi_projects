@@ -22,17 +22,18 @@ async def get_form():
                     <input type="text" id="username" name="username"> <br> <br>
                     <label for="password">Password:</label>
                     <input type="password" id="password" name="password"> <br><br>
+                    <label for="name">Name:</label>  <br>
+                    <input type="text" id="name" name="name"> <br><br>
                     <input type="submit" value="Submit">
-                    
                 </form>
             </body>
         </html>
         """
 
 
-@app.post("/login/")
-async def login(username: Annotated[str, Form()], password: Annotated[str, Form()]):
-    return {"username": username, "password_length ": len(password)}
+# @app.post("/login/")
+# async def login(username: Annotated[str, Form()], password: Annotated[str, Form()]):
+#     return {"username": username, "password_length ": len(password)}
 
 
 
@@ -42,3 +43,28 @@ async def login(username: Annotated[str, Form()], password: Annotated[str, Form(
 #     username: Annotated[str, Form(min_length=3)], 
 #     password: Annotated[str, Form(min_length=3, max_length=20)]):
 #     return {"username": username, "password_length ": len(password)}
+
+# ---------------------------------------------------------------------------------------------------------
+
+
+# Using Pydantic Model
+from pydantic import BaseModel, Field
+
+
+#Pydantic Models for Forms
+# class FormData(BaseModel):
+#     username: str
+#     password: str
+
+
+class FormData(BaseModel):
+    username: str = Field(min_length=3)
+    password: str = Field(min_length=3, max_length=20)
+    model_config ={"extra": "forbid"}
+
+
+# Pydantic Models for forms with Validations
+@app.post("/login/")
+async def login(data: Annotated[FormData,Form()]):
+    return data
+
