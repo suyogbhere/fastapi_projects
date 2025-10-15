@@ -2,6 +2,8 @@ from fastapi import FastAPI, Form, File, UploadFile
 from pydantic import BaseModel, Field
 from typing import Annotated
 from fastapi.responses import HTMLResponse
+import os
+import uuid
 
 
 app = FastAPI()
@@ -21,9 +23,26 @@ async def main():
         </html>        
         """
 
+##Using the bytes
+# @app.post("/files/")
+# async def create_file(file: Annotated[bytes | None, File()] = None):
+#     if not file:
+#         return {"message": "No file sent"}
+#     return ("file Size:", len(file))
 
+
+
+
+## Using the file save in binary name 
 @app.post("/files/")
 async def create_file(file: Annotated[bytes | None, File()] = None):
     if not file:
         return {"message": "No file sent"}
-    return ("file Size:", len(file))
+    
+    filename = f"{uuid.uuid4()}.bin"
+    save_path = f"uploads/{filename}"
+
+    os.makedirs("uploads", exist_ok=True)
+    with open(save_path, "wb") as buffer:
+        buffer.write(file)  
+    return {"File Size:", len(file)}
