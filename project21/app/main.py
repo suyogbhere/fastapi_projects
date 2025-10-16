@@ -4,7 +4,7 @@ from typing import Annotated
 from fastapi.responses import HTMLResponse
 import os
 import uuid
-import shutil     # Use for multiple file upload 
+import shutil    
 
 
 app = FastAPI()
@@ -61,6 +61,7 @@ async def main():
                 <form action="/uploadfiles/" enctype="multipart/form-data" method="post">
                 <input type="file" name="file">
                 <input type="submit" value="Upload">
+                </form>
             </body> 
         </html>        
         """
