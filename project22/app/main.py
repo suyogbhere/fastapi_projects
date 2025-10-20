@@ -34,3 +34,6 @@ async def create_upload_file(files: Annotated[list[UploadFile], File()]):
             shutil.copyfileobj(file.file, buffer)
         save_file.append({"filename": file.filename})
     return save_file    
+
+
+
