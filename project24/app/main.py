@@ -48,3 +48,33 @@ async def read_fruit(fruit_name: str):
     return fruits[fruit_name]
 
 
+
+
+
+###===================== Override default exception =========================================================
+
+from fastapi import FastAPI
+from fastapi.exceptions import RequestValidationError
+from fastapi.responses import PlainTextResponse
+
+
+
+
+fruits = {
+    "apple": "A juicy fruit",
+    "banana" : "A yellow delight"
+}
+
+
+# @app.exception_handler(RequestValidationError)
+# async def validation_exception_handler(request, exc: RequestValidationError):
+#     return PlainTextResponse(str(exc), status_code=400)
+
+
+
+@app.get("/item/{item_id}")
+async def read_item(item_id: int):
+    return item_id
+
+
+
