@@ -66,9 +66,9 @@ fruits = {
 }
 
 
-# @app.exception_handler(RequestValidationError)
-# async def validation_exception_handler(request, exc: RequestValidationError):
-#     return PlainTextResponse(str(exc), status_code=400)
+@app.exception_handler(RequestValidationError)
+async def validation_exception_handler(request, exc: RequestValidationError):
+    return PlainTextResponse(str(exc), status_code=400)
 
 
 
