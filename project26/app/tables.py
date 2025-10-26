@@ -49,7 +49,14 @@ address = Table(
 
 
 #Userr address association
-user_address_
+user_address_association = Table(
+    "user_address_association",
+    metadata,
+    Column("user_id", Integer, ForeignKey("users.id",
+    ondelete="CASCADE"), primary_key=True),
+    Column("address_id", Integer, ForeignKey("address.id",
+    ondelete="CASCADE"), primary_key=True)
+)
 
 
 
