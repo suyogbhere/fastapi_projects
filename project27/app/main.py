@@ -18,7 +18,15 @@ create_tables()
 # get_user_by_id(1)
 # print(get_user_by_id(1))
 # print(get_all_users())
-print(get_posts_by_user(2))
+# print(get_posts_by_user(2))
 
 
+
+## Update Data
+# update_user_email(1,'suyogbhere@gmail.com')
+
+
+
+# Delete Data
+delete_post(2)
 

@@ -42,3 +42,20 @@ def get_posts_by_user(user_id:int):
         stmt = select(posts).where(posts.c.user_id == user_id)
         result = conn.execute(stmt).fetchall()
         return result 
+    
+
+## Update User Email
+def update_user_email(user_id:int, new_email:str):
+    with engine.connect() as conn:
+        stmt = update(users).where(users.c.id == user_id).values(email=new_email)
+        conn.execute(stmt)
+        conn.commit()
+
+
+## Delete Post
+def delete_post(post_id:int):
+    with engine.connect() as conn:
+        stmt = delete(posts).where(posts.c.id == post_id)
+        conn.execute(stmt)
+        conn.commit()
+    
