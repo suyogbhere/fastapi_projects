@@ -84,3 +84,16 @@ def get_post_count_per_user():
         stmt = select(posts.c.user_id, func.count(posts.c.user_id).label("total_posts")).group_by(posts.c.user_id)
         result = conn.execute(stmt).fetchall()
         return result
+    
+
+
+## Join users and Posts (List all posts with author names )
+def get_posts_with_author():
+    with engine.connect() as conn:
+        stmt = select(
+            posts.c.id,
+            posts.c.title,
+            users.c.name.label("author_name")
+        ).join(users, posts.c.user_id == users.c.id)
+        result = conn.execute(stmt).fetchall()
+        return result

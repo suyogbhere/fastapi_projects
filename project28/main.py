@@ -13,6 +13,8 @@ create_tables()
 # create_post(1,"Hellow World", "This is suyog first post")
 # create_post(2,"Hellow World", "This is Suraj first post")
 # create_post(3,"Hi Hello", "This is Networking lelated posts")
+# create_post(4,"Hi prashant post", "Hi i am prshant p")
+# create_post(5,"Hi prashant post", "Hi i am prshant p")
 
 
 
@@ -38,4 +40,8 @@ create_tables()
 ## Get Users data Order by
 # print(get_users_ordered_by_name())
 # print(get_latest_post_first())
-print(get_post_count_per_user())
+# print(get_post_count_per_user())
+
+
+## Using Join 
+print(get_posts_with_author())
