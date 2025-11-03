@@ -97,3 +97,5 @@ def get_posts_with_author():
         ).join(users, posts.c.user_id == users.c.id)
         result = conn.execute(stmt).fetchall()
         return result
+
+
