@@ -12,3 +12,22 @@ def raw_sql_insert():
                     """)
         conn.execute(stmt, {"name":"Suyog", "email":"suyog@gmail.com"})
         conn.commit()
+
+
+
+## Using Raw SQL ( SELECT )
+def raw_sql_example():
+    with engine.connect() as conn:
+        stmt = text("SELECT * FROM users")
+        result = conn.execute(stmt)
+        return result
+    
+
+## Using Raw SQL ( SELECT where)
+def raw_sql_example_where():
+    with engine.connect() as conn:
+        stmt = text("SELECT * FROM users WHERE email = :email")
+        result = conn.execute(stmt, {"email":"suyog@gmail.com"}).first()
+        return result
+    
+
