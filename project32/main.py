@@ -28,4 +28,12 @@ from services import *
 
 
 ## Update data
-update_user_email(1,"suyog123@gmail.com")
+# update_user_email(1,"suyog123@gmail.com")
+
+
+## Delete data 
+# delete_post(2)
+
+
+## Order By 
+print(get_users_ordered_by_name())

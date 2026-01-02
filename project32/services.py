@@ -1,6 +1,6 @@
 from models import *
 from db import sessionlocal
-from sqlalchemy import select
+from sqlalchemy import select, asc
 
 
 ## Insert or Create User
@@ -65,3 +65,23 @@ def update_user_email(user_id:int, new_email: str):
             user.email = new_email
             session.commit()
             return user
+        
+
+
+## Delete POST
+def delete_post(post_id: int):
+    with sessionlocal() as session:
+        post = session.get(Post, post_id)
+        if post:
+            session.delete(post)
+            session.commit()
+
+
+## Order by 
+def get_users_ordered_by_name():
+    with sessionlocal() as session:
+        stmt = select(User).order_by(asc(User.name))
+        users = session.scalars(stmt).all()
+        return users
+    
+
