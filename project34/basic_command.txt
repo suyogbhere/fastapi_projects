@@ -1,0 +1,7 @@
+1) alembic init [directory]
+
+2)alembic revision -m "message"  [--autogenerate]
+
+3)alembic upgrade [revision]
+
+4) 
