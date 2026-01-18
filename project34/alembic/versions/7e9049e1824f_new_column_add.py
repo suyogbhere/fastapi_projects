@@ -1,4 +1,4 @@
-"""new column add
+"""Phone column add
 
 Revision ID: 7e9049e1824f
 Revises: 65b70d238f9e
@@ -20,7 +20,7 @@ depends_on: Union[str, Sequence[str], None] = None
 
 def upgrade() -> None:
     """Upgrade schema."""
-    op.add_column("users", sa.Column("phone", sa.String()))
+    op.add_column("users", sa.Column("phone", sa.Integer()))
 
 
 def downgrade() -> None:

@@ -15,7 +15,7 @@ class User(Base):
     id : Mapped[int] = mapped_column(primary_key=True)
     name : Mapped[int] = mapped_column(String(50), nullable=False)
     email : Mapped[str] = mapped_column(String, nullable=False, unique=True)
-    phone : Mapped[int] = mapped_column(Integer, nullable=True)
+    phone : Mapped[int] = mapped_column(Integer, nullable=True, unique=True)
 
     def __repr__(self) -> str:
         return f"<User id={self.id} name={self.name} email={self.email}>"
