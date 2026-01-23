@@ -7,3 +7,11 @@
 4)alembic downgrade [revision]
 
 5)alembic downgrade -1
+
+6)alembic revision --autogenerate  -m "message" 
+
+7)alembic current
+
+8)almbic history
+
+9)alembic check
