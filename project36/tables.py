@@ -22,3 +22,5 @@ async def drop_table():
     async with engine.begin() as conn:
         await conn.run_sync(metadata.drop_all)
 
+
+
