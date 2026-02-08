@@ -1,0 +1,11 @@
+alembic init -t async alembic
+
+
+##To Create revision migration file  to create Manually table code
+alembic revision -m "Create Table" 
+
+
+##To Create revision migration file automatically
+alembic revision --autogenerate  -m "Create Table" 
+
+alembic upgrade head

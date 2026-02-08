@@ -1,0 +1,70 @@
+from fastapi import FastAPI, Form
+from fastapi.responses import HTMLResponse
+from typing import Annotated
+
+app = FastAPI()
+
+
+## application/x-www-form-urlencoded
+## multipart/form-data
+
+
+
+## Simple HTML form for testing
+@app.get("/", response_class=HTMLResponse)
+async def get_form():
+    return """
+        <html>
+            <body>
+                <h2>Login Form</h2>
+                <form action="/login/" method="POST">
+                    <label for="username">Username:</label> <br>
+                    <input type="text" id="username" name="username"> <br> <br>
+                    <label for="password">Password:</label>
+                    <input type="password" id="password" name="password"> <br><br>
+                    <label for="name">Name:</label>  <br>
+                    <input type="text" id="name" name="name"> <br><br>
+                    <input type="submit" value="Submit">
+                </form>
+            </body>
+        </html>
+        """
+
+
+# @app.post("/login/")
+# async def login(username: Annotated[str, Form()], password: Annotated[str, Form()]):
+#     return {"username": username, "password_length ": len(password)}
+
+
+
+## With Validation
+# @app.post("/login/")
+# async def login(
+#     username: Annotated[str, Form(min_length=3)], 
+#     password: Annotated[str, Form(min_length=3, max_length=20)]):
+#     return {"username": username, "password_length ": len(password)}
+
+# ---------------------------------------------------------------------------------------------------------
+
+
+# Using Pydantic Model
+from pydantic import BaseModel, Field
+
+
+#Pydantic Models for Forms
+# class FormData(BaseModel):
+#     username: str
+#     password: str
+
+
+class FormData(BaseModel):
+    username: str = Field(min_length=3)
+    password: str = Field(min_length=3, max_length=20)
+    model_config ={"extra": "forbid"}
+
+
+# Pydantic Models for forms with Validations
+@app.post("/login/")
+async def login(data: Annotated[FormData,Form()]):
+    return data
+
