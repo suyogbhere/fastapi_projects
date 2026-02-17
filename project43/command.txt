@@ -1,0 +1,11 @@
+#initialize the alembic folder 
+alembic init -t async alembic
+
+
+## To create the revision file (migration file)  
+alembic revision --autogenerate -m "create users table"                     
+
+## To create table 
+alembic upgrade head
+
+

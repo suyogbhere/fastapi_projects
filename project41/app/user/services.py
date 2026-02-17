@@ -12,8 +12,9 @@ def create_user(name:str, email:str):
 
 
 ## Real Alll Users
-def get_all_user():
+def get_all_users():
     with Sessionlocal() as session:
         stmt = select(User)
         users = session.scalars(stmt)
         return users.all()
+    

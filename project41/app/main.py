@@ -16,3 +16,10 @@ class UserCreate(BaseModel):
 def user_create(user: UserCreate):
     user_services.create_user(name=user.name, email=user.email)
     return {"status": "created"}
+
+
+
+@app.get("/users")
+def all_users():
+    users = user_services.get_all_users()
+    return users
