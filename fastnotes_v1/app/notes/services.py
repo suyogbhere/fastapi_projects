@@ -25,7 +25,7 @@ async def get_note(note_id:int):
 
 ## fetch all data
 async def get_all_notes():
-    async with async_session as session:
+    async with async_session() as session:
         stmt = select(Notes)
         notes = await session.scalars(stmt)
         return notes.all()
@@ -50,7 +50,7 @@ async def patch_note(note_id:int, new_title:str|None=None, new_content:str|None=
     async with async_session() as session:
         note = await session.get(Notes, note_id)
         if note is None:
-            HTTPException(status_code=404, detail="Note not found")
+            raise HTTPException(status_code=404, detail="Note not found")
         if new_title is not None:
             note.title = new_title
         if new_content is not None:
@@ -63,9 +63,9 @@ async def patch_note(note_id:int, new_title:str|None=None, new_content:str|None=
 ## delete the data
 async def delete_note(note_id: int):
     async with async_session() as session:
-        note = await session.get(Notes,note_id)
+        note = await session.get(Notes, note_id)
         if note is None:
-            HTTPException(status_code=404, detail="Note is not found")
+            raise HTTPException(status_code=404, detail="Note is not found")
         await session.delete(note)
         await session.commit()
         return {"message": 'Deleted'}
