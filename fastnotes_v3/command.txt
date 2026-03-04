@@ -1,0 +1,11 @@
+##To create the alembic configuration folder 
+alembic init -t async alembic
+
+
+##To create a table alembic revision
+alembic revision --autogenerate -m "create notes table"
+
+## To Create Table 
+alembic upgrade head
+
+
