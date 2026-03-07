@@ -24,19 +24,20 @@ async_session = async_sessionmaker(bind=engine, expire_on_commit=False)
 
 
 
-## For Testing purpose
+## For Testing purpose can check 
 async def get_db():
     session = async_session()
     print(f"creating new asynchronous session: {id(session)}")
     try:
-        async with session():
+        async with session:
             yield session
         print(f"Session Commited and closed: {id(session)}")
     except Exception as e:
-        print(f"Error in Session: {id{session}}, rolling back: {str:(e)}")
+        print(f"Error in Session: {id(session)}, rolling back: {str(e)}")
         await session.rollback()
         raise   
     finally:
         await session.close()
         print(f"session explicitly closed, {id(session)}")
+
 SessionDep = Annotated[AsyncSession, Depends(get_db)]
