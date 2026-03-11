@@ -1,3 +1,5 @@
+## Swagger 
+
 from sqlmodel import Session, select
 from app.db.config import engine
 from app.user.models import User
@@ -9,4 +11,12 @@ def create_user(name:str, email: str):
         session.add(user)
         session.commit()
         session.refresh(user)
+
+
+def get_all_users():
+    with Session(engine) as session:
+        stmt = select(User)
+        users = session.exec(stmt)
+        return users.all()
+    
 
