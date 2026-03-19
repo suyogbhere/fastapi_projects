@@ -50,7 +50,7 @@ def task_patch(task_id: int, new_task:Taskpatch):
 
 
 
-@app.delete("/task/{task_id}", response_model=Taskout)
+@app.delete("/task/{task_id}")
 def task_delete(task_id: int):
     task = delete_task(task_id)
     return task
