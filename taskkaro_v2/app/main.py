@@ -2,6 +2,7 @@ from fastapi import FastAPI
 from contextlib import asynccontextmanager
 from app.db.config import create_tables
 from app.task.services import *
+from app.task.models import *
 
 
 
@@ -14,37 +15,37 @@ async def lifespan(app:FastAPI):
 app = FastAPI(lifespan=lifespan)
 
 
-@app.post("/task")
-def task_create(new_task: dict):
-    task = create_task(title=new_task["title"], content=new_task["content"])
+@app.post("/task", response_model=Taskout)
+def task_create(new_task: TaskCreate):
+    task = create_task(new_task)
     return task
 
 
 
 
-@app.get("/tasks")
+@app.get("/tasks", response_model=list[Taskout])
 def all_tasks():
     tasks = get_all_task()
     return tasks
 
 
-@app.get("/task/{task_id}")
+@app.get("/task/{task_id}", response_model=Taskout)
 def get_task(task_id: int):
     task = get_task_by_id(task_id)
     return task
 
 
 
-@app.put("/task/{task_id}")
-def put_task(task_id: int, new_task: dict):
-    task = update_task(task_id, title=new_task["title"], content=new_task["content"])
+@app.put("/task/{task_id}", response_model=Taskout)
+def put_task(task_id: int, new_task: Taskupdate):
+    task = update_task(task_id, new_task)
     return task
 
 
 
-@app.patch("/task/{task_id}")
-def task_patch(task_id: int, new_task:dict):
-    task = patch_task(task_id, title = new_task.get("title"), content=new_task.get("content"))
+@app.patch("/task/{task_id}", response_model=Taskout)
+def task_patch(task_id: int, new_task:Taskpatch):
+    task = patch_task(task_id, new_task)
     return task
 
 
