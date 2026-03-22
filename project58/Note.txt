@@ -1,0 +1,12 @@
+API Router :  is provide the feature of creating the subset of path operation
+                For scalabitlity of of large application
+
+
+
+
+
+
+
+
+
+
