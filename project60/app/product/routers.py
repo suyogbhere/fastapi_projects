@@ -1,15 +1,15 @@
 from fastapi import APIRouter
 
-router = APIRouter()
+router = APIRouter(prefix="/products")
 
 
 
-@router.get("/products")
+@router.get("/")
 async def get_all_products():
     return {"data": "all products"}
 
 
-@router.get("/product/{user_id}")
+@router.get("/{user_id}")
 async def get_single_product(user_id: int):
     return {"data": "Single Product"}
 
