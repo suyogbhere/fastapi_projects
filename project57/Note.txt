@@ -1,0 +1,5 @@
+ASGI Middleware are custom or third-party Middleware that follow the ASGI spec.
+
+ASGI  Middleware are typically classes that take an ASGI app and configuration parameters
+
+
