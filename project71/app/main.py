@@ -20,7 +20,7 @@ html = """
             <label>
                 Token: <input type="text" id="token" autocomplete="off" value="some-key-token" />
             </label>
-            <button onclick="connect(event)"> Connect </button>
+            <button type="button" onclick="connect(event)"> Connect </button>
             <hr>
             <label>Message: <input type="text" id="messageText" autocomplete="off" /> </label>
             <button> Send </button>
@@ -33,16 +33,17 @@ html = """
             function connect(event) {
                 var itemId = document.getElementById("itemId")
                 var token = document.getElementById("token")
-                ws new WebSocket("ws://localhost:8000/items/" + itemId.value + "ws?token" + token.value);
+                ws = new WebSocket("ws://localhost:8000/items/" + itemId.value + "/ws?token=" + token.value);
                 ws.onmessage = function(event){
                     var messages = document.getElementById("messages")
                     var message = document.createElement("li")
                     var content = document.createTextNode(event.data)
                     message.appendChild(content)
+                    messages.appendChild(message)
                 };
                 event.preventDefault()
             }
-            function sendMessage(event) | 
+            function sendMessage(event) {
              var input = document.getElementById("messageText")
              ws.send(input.value)
              input.value = ""
@@ -69,3 +70,22 @@ async def get_cookie_or_token(websocket: WebSocket,
         return session or token
 
 
+
+@app.websocket("/items/{item_id}/ws")
+async def websocket_endpoint(
+        *,
+        websocket: WebSocket,
+        item_id : str,
+        q: int | None = None,
+        cookie_or_token : Annotated[str, Depends(get_cookie_or_token)]):
+    await websocket.accept()
+    try:
+        while True:
+            data = await websocket.receive_text()
+            await websocket.send_text(f"Session cookie or query token value is: {cookie_or_token}")
+            if q is not None:
+                await websocket.send_text(f"Query parameter q is: {q}")
+            await websocket.send_text(f"Message text was: {data}, for item ID: {item_id}")
+    except WebSocketDisconnect:
+        print("Client Disconnect")
+          
