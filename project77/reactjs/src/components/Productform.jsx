@@ -1,0 +1,51 @@
+import {useState} from 'react'
+
+const ProductForm = ({onProductAdded}) => {
+    const [title, setTitle] = useState('');
+    const [description, setDescription] = useState('');
+
+    const handleSubmit = async(e) => {
+    e.preventDefault();
+    const res = await fetch('http://localhost:800/products', {
+      method: 'POST',
+      header: {
+        'Content-Type':'application/json',
+      },
+      body: JSON.stringify({title, description}),
+    });
+  
+    if (res.ok){
+      setTitle('');
+      setDescription('');
+      const newProduct = await res.json();
+      onProductAdded(newProduct);
+    }
+    else{
+      alert("Error adding product");
+    }
+  };
+
+    return(
+            <form onSubmit={handleSubmit}>
+                <h2>Add Product</h2>
+                <input type="text" placeholder='Title'
+                value={title}
+                onChange={(e) => setTitle(e.target.value)} 
+                name="" id=""
+                required />
+                <br />
+
+                <textarea name="" 
+                placeholder="Description"
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                required id=""></textarea>
+                <br />
+                <button type="submit">Add</button>
+            </form>
+    )
+    
+}
+
+
+export default ProductForm

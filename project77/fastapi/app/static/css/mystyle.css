@@ -1,0 +1,108 @@
+/* General Body styling */
+body {
+    background: linear-gradient(135deg, #def2f7, #00e6c3);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #222;
+    margin: 0;
+    padding: 0;
+}
+
+/* Header */
+h1 {
+    text-align: center;
+    margin-top: 40px;
+    color: #0a5c5c;
+    letter-spacing: 2px;
+}
+
+/* Form Container */
+form {
+    width: 350px;
+    margin: 30px auto;
+    padding: 25px;
+    border-radius: 16px;
+    background: #ffffff;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+    transition: transform 0.3s ease;
+}
+
+/* Hover lift effect */
+form:hover {
+    transform: translateY(-5px);
+}
+
+/* Input & textarea */
+input, textarea {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    outline: none;
+    transition: all 0.3s ease;
+    font-size: 14px;
+}
+
+/* Focus effect */
+input:focus, textarea:focus {
+    border-color: #00bfa5;
+    box-shadow: 0 0 8px rgba(0,191,165,0.4);
+    transform: scale(1.02);
+}
+
+/* Button styling */
+button {
+    width: 100%;
+    padding: 10px;
+    background: linear-gradient(135deg, #00c6ff, #00bfa5);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+/* Button hover */
+button:hover {
+    background: linear-gradient(135deg, #00bfa5, #00796b);
+    transform: scale(1.05);
+}
+
+/* Button click */
+button:active {
+    transform: scale(0.98);
+}
+
+/* Divider */
+hr {
+    width: 80%;
+    margin: 30px auto;
+    border: 0;
+    height: 1px;
+    background: #ccc;
+}
+
+/* Product List */
+ul {
+    width: 60%;
+    margin: auto;
+    padding: 0;
+}
+
+/* List items */
+li {
+    list-style: none;
+    background: white;
+    margin: 10px 0;
+    padding: 12px 15px;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    transition: all 0.3s ease;
+}
+
+/* Hover effect for list */
+li:hover {
+    transform: translateX(5px);
+    background: #e0f7fa;
+}
