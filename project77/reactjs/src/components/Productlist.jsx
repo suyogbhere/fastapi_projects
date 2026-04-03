@@ -9,9 +9,16 @@ const ProductList = () => {
         const data = await res.json();
         setProducts(data);
     };
+    useEffect(() => {
+        fetchProducts();
+    }, []);
 
     return (
         <div>
+            <h1>Product List</h1>
+            <ProductForm  onProductAdded={(product) => setProducts([...products, product])} />
+            
+            <hr />
             <ul>
                 {products.map((p) => (
                     <li key={p.id}>

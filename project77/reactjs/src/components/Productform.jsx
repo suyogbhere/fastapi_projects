@@ -1,14 +1,16 @@
 import {useState} from 'react'
 
+
+
 const ProductForm = ({onProductAdded}) => {
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
 
     const handleSubmit = async(e) => {
     e.preventDefault();
-    const res = await fetch('http://localhost:800/products', {
+    const res = await fetch('http://localhost:8000/products', {
       method: 'POST',
-      header: {
+      headers: {
         'Content-Type':'application/json',
       },
       body: JSON.stringify({title, description}),
@@ -41,7 +43,7 @@ const ProductForm = ({onProductAdded}) => {
                 onChange={(e) => setDescription(e.target.value)}
                 required id=""></textarea>
                 <br />
-                <button type="submit">Add</button>
+                <button type="submit">➕Add Product</button>
             </form>
     )
     
