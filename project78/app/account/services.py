@@ -1,6 +1,7 @@
 from app.account.models import User, UserCreate
 from sqlmodel import Session, select
 from fastapi import HTTPException
+from app.account.utils import hash_password 
 
 
 def create_user(session:Session, user:UserCreate):
@@ -10,7 +11,7 @@ def create_user(session:Session, user:UserCreate):
     new_user = User(
         email = user.email,
         name = user.name,
-        hashed_password= user.password,
+        hashed_password= hash_password(user.password),
         is_verified=False
     )
     session.add(new_user)
