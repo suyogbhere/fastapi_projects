@@ -1,7 +1,7 @@
 from passlib.context import CryptContext
 from datetime import timedelta, datetime, timezone
 from jose import jwt, JWTError
-from sqlmodel import Session
+from sqlmodel import Session, select
 import uuid
 from app.account.models import RefreshToken,User
 
@@ -47,3 +47,21 @@ def create_token(session:Session,  user=User):
         "refresh_token": refresh_token_str,
         "token_type": "bearer"
     }
+
+
+
+def verify_refresh_token(session: Session, token: str):
+    stmt = select(RefreshToken).where(RefreshToken.token == token)
+    db_token = session.exec(stmt).first()
+    if db_token and not db_token.revoked:
+        expires_at = db_token.expires_at
+        if expires_at.tzinfo is None:
+            expires_at = expires_at.replace(tzinfo=timezone.utc)
+        if expires_at > datetime.now(timezone.utc):
+            stmt = select(User).where(User.id == db_token.user_id)
+            return session.exec(stmt).first()
+    return None
+
+
+
+
