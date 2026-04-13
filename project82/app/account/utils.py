@@ -103,3 +103,10 @@ def create_password_reset_token(user_id:int):
 
 
 
+
+def revoke_refresh_token(session: Session, token: str):
+    stmt = select(RefreshToken).where(RefreshToken.token == token)
+    db_token = session.exec(stmt).first()
+    if db_token:
+        db_token.revoked = True
+        session.commit()
