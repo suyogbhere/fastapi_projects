@@ -1,4 +1,4 @@
-from account.models import User, UserCreate
+from app.account.models import User, UserCreate
 from sqlmodel import Session, select
 from fastapi import HTTPException
 from app.account.utils import hash_password, verify_password, create_email_verification_token, verfiy_token_and_get_user_id, verify_refresh_token,get_user_email, create_password_reset_token

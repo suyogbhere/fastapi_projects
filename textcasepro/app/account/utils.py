@@ -3,7 +3,7 @@ from datetime import datetime, timedelta, timezone
 from jose import JWTError, jwt
 from sqlmodel import Session, select
 import uuid
-from account.models import RefreshToken, User
+from app.account.models import RefreshToken, User
 
 
 SECRET_KEY = "YGSFDSKNDSjsbduhsfebddwquwdsa ajsajdu2648ubfj4y32ugdb"

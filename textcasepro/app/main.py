@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from contextlib import asynccontextmanager
 from app.db.config import create_tables
-
+from app.account.router import router as account_router
 
 
 
@@ -13,4 +13,9 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(lifespan=lifespan)
+
+
+
+# Register router
+app.include_router(account_router)
 
