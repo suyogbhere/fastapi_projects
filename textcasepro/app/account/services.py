@@ -1,15 +1,29 @@
-from app.account.models import User, UserCreate
-from sqlmodel import Session, select
+from app.account.models import User
+from app.account.schemas import UserCreate
+from sqlalchemy import select
+from sqlalchemy.ext.asyncio import AsyncSession
 from fastapi import HTTPException
-from app.account.utils import hash_password, verify_password, create_email_verification_token, verfiy_token_and_get_user_id, verify_refresh_token,get_user_email, create_password_reset_token
+from app.account.utils import (
+    hash_password, 
+    verify_password, 
+    create_email_verification_token, 
+    verfiy_token_and_get_user_id, 
+    get_user_email, 
+    create_password_reset_token
+)
 
 
 
 
-def create_user(session: Session, user: UserCreate):
+async def create_user(session: AsyncSession, user: UserCreate):
     stmt = select(User).where(User.email == user.email)
-    if session.exec(stmt).first():
-        raise HTTPException(status_code=400, detail="Email Already registered!!!")
+
+    result = await session.execute(stmt)
+    existing_user = result.scalars().first()
+
+    if existing_user:
+        raise HTTPException(status_code=400, detail="Email Already registered !!!")
+    
     new_user = User(
         email = user.email,
         name = user.name,
@@ -17,15 +31,16 @@ def create_user(session: Session, user: UserCreate):
         is_verified = False
     )
     session.add(new_user)
-    session.commit()
-    session.refresh(new_user)
+    await session.commit()
+    await session.refresh(new_user)
     return new_user
 
 
 
-def authenticate_user(session: Session, email: str, password: str):
+async def authenticate_user(session: AsyncSession, email: str, password: str):
     stmt = select(User).where(User.email == email)
-    user = session.exec(stmt).first()
+    result = await session.execute(stmt)
+    user = result.scalars().first()
     if not user or not verify_password(password, hash_password):
         return None
     return user
@@ -39,7 +54,7 @@ def process_email_verification(user:User):
 
 
 
-def verify_email_token(session:Session, token: str):
+def verify_email_token(session:AsyncSession, token: str):
     user_id = verfiy_token_and_get_user_id(token, "verify")
     if not user_id:
         raise HTTPException(status_code=400, detail="Invalid or expired token !!")
@@ -55,14 +70,14 @@ def verify_email_token(session:Session, token: str):
 
 
 
-def change_password(session:Session, user:User, new_password: str):
+def change_password(session:AsyncSession, user:User, new_password: str):
     user.hashed_password = hash_password(new_password)
     session.add(user)
     session.commit()
 
 
 
-def process_password_reset(session: Session, email: str):
+def process_password_reset(session: AsyncSession, email: str):
     user = get_user_email(session, email)
     if not user:
         raise HTTPException(status_code=404, detail="User not Found!!")

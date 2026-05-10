@@ -6,7 +6,7 @@ from app.account.utils import decode_token
 from app.account.models import User
 
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl = "/account/login")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl = "/api/account/login")
 
 
 def get_current_user(session: SessionDep, token: str =Depends(oauth2_scheme)):

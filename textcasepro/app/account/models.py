@@ -1,40 +1,36 @@
-from sqlmodel import SQLModel, Field, UniqueConstraint
+from sqlalchemy.orm import Mapped, mapped_column, relationship
+from sqlalchemy import String, Boolean, DateTime, ForeignKey
 from datetime import datetime, timezone
+from app.db.config import Base
 
 
 
-class UserBase(SQLModel):
-    name: str
-    email: str
-    is_admin: bool = False
-    is_active: bool = True
 
 
-class UserCreate(UserBase):
-    password : str
-
-
-class UserOut(UserBase):
-    id: int
-
-
-class User(UserBase, table=True):
-    id: int = Field(primary_key=True)
-    hashed_password : str
-    is_verified: bool = False
-    created_at : datetime = Field(default_factory= lambda: datetime.now(timezone.utc))
-    updated_at : datetime = Field(default_factory= lambda: datetime.now(timezone.utc))
-
-
-class RefreshToken(SQLModel, table=True):
-    id : int = Field(default=None, primary_key=True)
-    user_id : int = Field(foreign_key="user.id")
-    token : str
-    expires_at : datetime
-    created_at : datetime = Field(default_factory= lambda : datetime.now(timezone.utc))
-    revoked: bool = False
+class User(Base):
+    __tablename__ = 'user'
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    email: Mapped[str] = mapped_column(String, unique=True, nullable=False)
+    hashed_password : Mapped[str] = mapped_column(String, nullable=False)
+    name: Mapped[str] = mapped_column(String, nullable=False)
+    is_active : Mapped[bool] = mapped_column(Boolean, default=True)
+    is_admin : Mapped[bool] = mapped_column(Boolean, default=False)
+    is_verified: Mapped[bool] = mapped_column(Boolean, default=False)
+    created_at : Mapped[datetime] = mapped_column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc))
+    updated_at : Mapped[datetime] = mapped_column(DateTime(timezone=True), default= lambda: datetime.now(timezone.utc))
+    refresh_token : Mapped[list["RefreshToken"]] = relationship("RefreshToken", back_populates="user")
 
 
 
+class RefreshToken(Base):
+    __tablename__ = "refresh_token"
+
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    user_id: Mapped[int] = mapped_column(ForeignKey("user.id"))
+    token: Mapped[str] = mapped_column(String, nullable=False)
+    expires_at : Mapped[datetime] = mapped_column(DateTime(timezone=True))
+    created_at : Mapped[datetime] = mapped_column(DateTime(timezone=True), default=lambda: datetime.now(timezone))
+    revoked: Mapped[bool] = mapped_column(Boolean, default=False)
+    user: Mapped["User"] = relationship(back_populates="refresh_tokens")
 
  
