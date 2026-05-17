@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends
 from app.converter.schemas import APIKeyOut
 from app.db.config import SessionDep
 from app.account.models import User
-from app.converter.services import generate_user_api_key
+from app.converter.services import generate_user_api_key, get_user_api_key
 from app.account.dependencies import get_current_user
 
 
@@ -16,6 +16,17 @@ async def generate_api_key_view(
     ):
     key = await generate_user_api_key(session, user)
     return {"key":key}
+
+
+
+@router.get("/me/api-key", response_model=APIKeyOut)
+async def get_my_api_key(
+    session: SessionDep,
+    user: User = Depends(get_current_user),
+):
+    key = await get_user_api_key(session, user)
+    return {"key":key}
+
 
 
 
