@@ -1,10 +1,13 @@
 from fastapi import APIRouter, Depends
-from app.converter.schemas import APIKeyOut, CreditBalance, CreditRequestOut,CreditRequestCreate
+from app.converter.schemas import APIKeyOut, CreditBalance, CreditRequestOut,CreditRequestCreate, ConvertRequest, ConvertResponse
 from app.db.config import SessionDep
 from app.account.models import User
-from app.converter.services import generate_user_api_key, get_user_api_key, get_or_create_user_credits, get_credit_requests_list,submit_credit_request,approve_credit_request
+from app.converter.services import generate_user_api_key, get_user_api_key, get_or_create_user_credits, get_credit_requests_list,submit_credit_request,approve_credit_request,handle_conversion
 from app.account.dependencies import get_current_user, require_admin
 from typing import List
+from app.converter.deps import get_user_from_api_key
+
+
 
 
 
@@ -54,4 +57,11 @@ async def buy_credits(session: SessionDep, data: CreditRequestCreate, user: User
 async def approve_request(session: SessionDep, request_id: int, user: User=Depends(require_admin)):
     return await approve_credit_request(session, request_id)
 
+
+
+@router.post("/convert", response_model=ConvertResponse)
+async def convert(session: SessionDep, data: ConvertRequest, user: User= Depends(get_user_from_api_key)):
+    result = await handle_conversion(session, data, user)
+    return result
+    
 

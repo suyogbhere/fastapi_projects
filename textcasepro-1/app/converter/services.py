@@ -1,7 +1,8 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.account.models import User
 from app.converter.models import UserCredits, APIKey, CreditRequest
-from app.converter.utils import generate_api_key
+from app.converter.utils import generate_api_key, convert_text
+from app.converter.schemas import ConvertRequest
 from sqlalchemy import select, delete
 from fastapi import HTTPException
 
@@ -60,5 +61,21 @@ async def approve_credit_request(session: AsyncSession, request_id: int):
     await session.commit()
     await session.refresh(req)
     return req
+
+
+async def handle_conversion(session: AsyncSession, data: ConvertRequest, user: User):
+    credits_obj = await get_or_create_user_credits(session, user.id)
+    if credits_obj.credits <= 0:
+        raise HTTPException(status_code=402, detail="Out of credits")
+    try:
+        result = convert_text(data.text, data.operation)
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail= str(e))
+    credits_obj.credits -= 1
+    await session.commit()
+    return {"result":result}
+
+
+
 
 
