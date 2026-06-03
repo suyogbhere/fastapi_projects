@@ -1,0 +1,65 @@
+body{
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: aliceblue;
+    margin: 0;
+    padding: 20px;
+}
+
+h1{
+    text-align: center;
+    color: #343a40;
+}
+
+.container{
+    max-width: 900px;
+    margin: 0 auto;
+    background-color: aliceblue;
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 0 10px  rgba(0,0,0,0.1);
+}
+
+
+label{
+    display: block;
+    margin: 1 rem 0 0.5rem;
+    font-weight: bold;
+}
+
+
+input[type="text"], input[type="email"], input[type="date"]{
+    width: 100px;
+    padding: 40px;
+
+}
+
+
+
+
+.radio-group label, .checkbox-group lable{
+    font-weight: 50px;
+    margin-right: 14px;
+}
+
+
+
+table{
+    border-collapse: collapse;
+    width: 100%;
+    margin-top: 2rem;
+}
+
+th, td{
+    border: 1px solid whitesmoke;
+    padding: 10px;
+    text-align: left;
+}
+
+
+
+
+
+a:hover{
+    text-decoration: underline;
+}
+
