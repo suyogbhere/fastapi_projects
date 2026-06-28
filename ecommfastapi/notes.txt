@@ -1,0 +1,25 @@
+python -m venv venv
+
+venv\scripts\activate
+
+
+pip install "fastapi[standard]" sqlalchemy[asyncio] aiomysql alembic python-decouple python-jose[cryptography] 
+passlib[bcrypt] cryptography
+
+
+fastapi dev app/main.py
+or 
+uvicorn app.main:app --reload
+
+
+#To create alembic folder
+alembic init -t async alembic
+
+#For creating migration file and create the sql query
+alembic revision --autogenerate -m "create table"
+
+#For applying latest migration creating table in database
+alembic upgrade head
+
+
+
