@@ -2,8 +2,8 @@ from app.account.models import User
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 from fastapi import HTTPException, status
-from app.account.schemas import UserCreate
-from app.account.utils import hash_password
+from app.account.schemas import UserCreate, UserLogin 
+from app.account.utils import hash_password, verify_password
 
 
 
@@ -25,6 +25,15 @@ async def create_user(session: AsyncSession, user: UserCreate ):
     return new_user
 
 
+async def authenticate_user(session: AsyncSession, user_login:UserLogin):
+    stmt = select(User).where(User.email == user_login.email)
+    result = await session.scalars(stmt)
+    user = result.first()
+
+    if not user or not verify_password(user_login.password, user.hashed_password):
+        return None
+    
+    return user
 
 
 

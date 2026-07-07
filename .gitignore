@@ -3,3 +3,8 @@ fastapivenv/
 
 
 node_modules/
+
+.env
+
+
+

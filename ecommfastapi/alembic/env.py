@@ -31,8 +31,8 @@ DATABASE_URL = f"postgresql+asyncpg://{DB_USER}:{DB_PASS}@{DB_HOST}:{DB_PORT}/{D
 
 config.set_main_option("sqlalchemy.url", DATABASE_URL)
 
-print("DATABASE_URL:", DATABASE_URL)
-print("ALEMBIC URL:", config.get_main_option("sqlalchemy.url"))
+# print("DATABASE_URL:", DATABASE_URL)
+# print("ALEMBIC URL:", config.get_main_option("sqlalchemy.url"))
   
 
 
