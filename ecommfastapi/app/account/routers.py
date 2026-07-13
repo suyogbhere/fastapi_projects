@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException, status, Depends, Request
-from app.account.schemas import UserCreate, UserOut, UserLogin
-from app.account.services import create_user, authenticate_user
+from app.account.schemas import UserCreate, UserOut, UserLogin, PasswordChangeRequest
+from app.account.services import create_user, authenticate_user, email_verification_send,verify_email_token, change_password
 from app.db.config import SessionDep
 from app.account.utils import create_tokens, verify_refresh_token
 from fastapi.responses import JSONResponse
@@ -84,3 +84,27 @@ async def refresh_token(session:SessionDep, request: Request):
         max_age=60*60*24*7
     )
     return response
+
+
+@router.post("/send-verification-email")
+async def send_verification_email(user : User = Depends(get_current_user)):
+    return await email_verification_send(user)
+
+
+@router.get("/verify-email")
+async def verify_email(session: SessionDep, token:str):
+    return await verify_email_token(session, token)
+
+
+
+@router.post("/change-password")
+async def password_change(session: SessionDep, data: PasswordChangeRequest, user: User=Depends(get_current_user)):
+    await change_password(session, user, data)
+    return {"msg": "Password changed successfully"}
+
+
+
+
+
+
+

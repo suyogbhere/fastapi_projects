@@ -13,6 +13,7 @@ JWT_SECRET_KEY = config("JWT_SECRET_KEY")
 JWT_ALGORITHM = config("JWT_ALGORITHM")
 JWT_ACCESS_TOKEN_TIME_MIN = config("JWT_ACCESS_TOKEN_TIME_MIN", cast=int)
 JWT_REFRESH_TOKEN_TIME_DAYS = config("JWT_REFRESH_TOKEN_TIME_DAYS", cast=int)
+EMAIL_VERIFICATION_TOKEN_TIME_HOUR = config("EMAIL_VERIFICATION_TOKEN_TIME_HOUR", cast=int)
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
@@ -81,3 +82,22 @@ async def verify_refresh_token(session:AsyncSession, token: str):
             user_result = await session.scalars(user_stmt)
             return user_result.first()
     return None
+
+
+
+def create_email_verification_token(user_id: int):
+    expire = datetime.now(timezone.utc) + timedelta(hours=EMAIL_VERIFICATION_TOKEN_TIME_HOUR)
+    to_encode = {"sub": str(user_id), "type":"verify_email", "exp":expire}
+    return jwt.encode(to_encode, JWT_SECRET_KEY, algorithm=JWT_ALGORITHM)
+
+
+
+def verify_email_token_and_get_user_id(token:str, token_type: str):
+    payload = decode_token(token)
+    print("PAYLOAD:",payload)
+    print("TOKEN_TYPE:",token_type)
+    if not payload or payload.get("type") != token_type:
+        return None
+    return int(payload.get("sub"))
+ 
+ 
