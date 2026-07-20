@@ -14,6 +14,7 @@ JWT_ALGORITHM = config("JWT_ALGORITHM")
 JWT_ACCESS_TOKEN_TIME_MIN = config("JWT_ACCESS_TOKEN_TIME_MIN", cast=int)
 JWT_REFRESH_TOKEN_TIME_DAYS = config("JWT_REFRESH_TOKEN_TIME_DAYS", cast=int)
 EMAIL_VERIFICATION_TOKEN_TIME_HOUR = config("EMAIL_VERIFICATION_TOKEN_TIME_HOUR", cast=int)
+EMAIL_PASSWORD_RESET_TOKEN_TIME_HOUR = config("EMAIL_PASSWORD_RESET_TOKEN_TIME_HOUR", cast=int)
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
@@ -61,7 +62,7 @@ def decode_token(token: str):
         return jwt.decode(token, JWT_SECRET_KEY, algorithms=JWT_ALGORITHM)
     except ExpiredSignatureError:
         raise HTTPException(status_code=401, detail="Token has expired!!")
-    except JWTError:
+    except JWTError: 
         raise HTTPException(status_code=401, detail="Invalid Token!!")
     
     
@@ -99,5 +100,41 @@ def verify_email_token_and_get_user_id(token:str, token_type: str):
     if not payload or payload.get("type") != token_type:
         return None
     return int(payload.get("sub"))
+    
  
+
+
+async def get_user_by_email(session: AsyncSession, email: str):
+    stmt = select(User).where(User.email == email)
+    result = await session.scalars(stmt)
+    return result.first()
+
+
+def create_password_reset_token(user_id: int):
+    expire = datetime.now(timezone.utc) + timedelta(hours=EMAIL_PASSWORD_RESET_TOKEN_TIME_HOUR)
+    to_encode = {"sub": str(user_id),
+                 "type":"password_reset",
+                 "exp":expire
+                 }
+    return jwt.encode(to_encode, JWT_SECRET_KEY, algorithm=JWT_ALGORITHM)
+
+
+
+async def revoke_refresh_token(session: AsyncSession, token: str):
+    stmt = select(RefreshToken).where(RefreshToken.token == token)
+    result = await session.scalars(stmt)
+    db_refresh_token = result.first()
+    if db_refresh_token:
+        db_refresh_token.revoked = True
+        await session.commit()
+
+
+
+# def verify_password_reset_token_and_get_user_id(token:str, token_type: str):
+#     payload = decode_token(token)
+#     print("PAYLOAD:",payload)
+#     print("TOKEN_TYPE:",token_type)
+#     if not payload or payload.get("type") != token_type:
+#         return None
+#     return int(payload.get("sub"))
  

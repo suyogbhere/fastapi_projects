@@ -1,10 +1,10 @@
 from fastapi import APIRouter, HTTPException, status, Depends, Request
-from app.account.schemas import UserCreate, UserOut, UserLogin, PasswordChangeRequest
-from app.account.services import create_user, authenticate_user, email_verification_send,verify_email_token, change_password
+from app.account.schemas import UserCreate, UserOut, UserLogin, PasswordChangeRequest, PasswordResetEmailRequest,PasswordResetRequest
+from app.account.services import create_user, authenticate_user, email_verification_send,verify_email_token, change_password,password_reset_email_send,verify_password_reset_token
 from app.db.config import SessionDep
-from app.account.utils import create_tokens, verify_refresh_token
+from app.account.utils import create_tokens, verify_refresh_token, revoke_refresh_token
 from fastapi.responses import JSONResponse
-from app.account.deps import get_current_user
+from app.account.deps import get_current_user, require_admin
 from app.account.models import User
 
 router = APIRouter()
@@ -104,7 +104,32 @@ async def password_change(session: SessionDep, data: PasswordChangeRequest, user
 
 
 
+@router.post("/send-password-reset-email")
+async def send_password_reset_email(session: SessionDep, data: PasswordResetEmailRequest):
+    return await password_reset_email_send(session, data)
 
 
+
+@router.post("/verify-password-reset-token")
+async def verify_password_reset_email_token(session:SessionDep, data: PasswordResetRequest):
+    return await verify_password_reset_token(session, data)
+
+
+
+@router.get("/admin")
+async def admin(user: User = Depends(require_admin)):
+    return {"msg": f"Welcome Admin {user.email}"}
+
+
+
+@router.post("/logout")
+async def logout(session: SessionDep, request: Request, user: User= Depends(get_current_user)):
+    refresh_token = request.cookies.get("refresh_token")
+    if refresh_token:
+        await revoke_refresh_token(session, refresh_token)
+    response = JSONResponse(content={"detail":"Logged Out"})
+    response.delete_cookie("refresh_token")
+    response.delete_cookie("access_token")
+    return response
 
 
