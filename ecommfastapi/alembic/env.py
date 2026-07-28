@@ -9,6 +9,7 @@ from decouple import config as env_config
 from app.db.base import Base
 
 from app.account import models as account_models
+from app.product import models as product_models
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.

@@ -21,5 +21,7 @@ alembic revision --autogenerate -m "create table"
 #For applying latest migration creating table in database
 alembic upgrade head
 
-
+  
+#to  get the latest alembic_versionn
+alembic stamp head
 
