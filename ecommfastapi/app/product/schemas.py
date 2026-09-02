@@ -46,3 +46,9 @@ class ProductOut(ProductBase):
     }
 
 
+
+class PaginatedProductOut(BaseModel):
+     total: int
+     page: int
+     limit: int
+     items: list[ProductOut]

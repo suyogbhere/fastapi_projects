@@ -21,12 +21,12 @@ class Product(Base):
     description: Mapped[str] = mapped_column(Text, nullable=True)
     slug: Mapped[str] = mapped_column(Text, unique=True, nullable=False)
     price: Mapped[float] = mapped_column(Float, nullable=False)
-    stock_quantiy: Mapped[int] =mapped_column(default=0)
+    stock_quantity: Mapped[int] =mapped_column(default=0)
     image_url: Mapped[str] = mapped_column(String(255), nullable=True)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc))
     updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc))
 
-    categories: Mapped[list["Category"]] = relationship("Category", secondary=product_category_table, back_populates="products")
+    categories: Mapped[list["Category"]] = relationship("Category", secondary=product_category_table, back_populates="products",lazy="select")
 
 
 class Category(Base):
