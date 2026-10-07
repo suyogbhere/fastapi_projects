@@ -1,8 +1,8 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 from app.product.models import Product, Category
-from app.product.schemas import CategoryOut, CategoryCreate, ProductCreate, ProductOut
-from sqlalchemy import select, func
+from app.product.schemas import CategoryOut, CategoryCreate, PaginatedProductOut, ProductCreate, ProductOut
+from sqlalchemy import and_, select, func
 from fastapi import HTTPException, UploadFile, status
 from app.product.utils import save_upload_file, generate_slug
 
@@ -86,4 +86,102 @@ async def get_all_products(session: AsyncSession,
         }
 
 
-        
+
+async def search_product(session: AsyncSession, 
+                         category_names: list[str]| None = None,
+                         title: str | None = None,
+                         description: str | None = None,
+                         min_price: float | None = None,
+                         max_price: float | None = None,
+                         limit: int = 5,
+                         page: int = 1
+                         ) -> dict:
+                        stmt = select(Product).options(selectinload(Product.categories))
+
+                        if category_names:
+                              stmt = stmt.join(Product.categories).where(Category.name.in_(category_names)).distinct()
+
+                        filters = []
+
+                        if title:
+                              filters.append(Product.title.like(f"%{title}%"))
+
+                        if description:
+                              filters.append(Product.description.like(f"%{description}%"))
+
+                        if min_price is not None:
+                              filters.append(Product.price >= min_price)
+
+                        if max_price is not None:
+                              filters.append(Product.price <= max_price)
+
+                        if filters:
+                              stmt = stmt.where(and_(*filters))
+
+                        count_stmt = stmt.with_only_columns(func.count(Product.id)).order_by(None)
+                        total = await session.scalar(count_stmt)
+                        stmt = stmt.limit(limit).offset((page-1)*limit)
+
+                        result = await session.execute(stmt)
+                        products = result.scalars().all()
+                        return{
+                              "total": total,
+                              "page": page,
+                              "limit": limit,
+                              "Items": products
+                        }
+ 
+                        
+
+async def get_product_by_slug(
+        session: AsyncSession,
+        slug: str,
+) -> ProductOut | None :
+    stmt = select(Product).options(selectinload(Product.categories)).where(Product.slug == slug)
+    result = await session.execute(stmt)
+    return result.scalar()
+
+
+async def search_product(
+            session: AsyncSession,
+            category_names: list[str] | None=None,
+            title: str | None = None,
+            description: str | None=None,
+            min_price: float | None=None,
+            max_price: float | None=None,
+            limit: int=5,
+            page: int=1
+        ) -> dict:
+    stmt = select(Product).options(selectinload(Product.categories))
+
+    if category_names:
+        stmt = stmt.join(Product.categories).where(Category.name.in_(category_names)).distinct()
+
+    filters = []
+
+    if title:
+        filters.append(Product.title.like(f"%{title}%"))
+    
+    if description:
+            filters.append(Product.description.like(f"%{description}%"))
+
+    if min_price is not None:
+          filters.append(Product.price >= min_price)
+
+    if max_price is not None:
+              filters.append(Product.price >= max_price)
+
+    if filters:
+          stmt = stmt.where(and_(*filters))
+
+    count_stmt = stmt.with_only_columns(func.count(Product.id)).order_by(None)
+    total = await session.scalar(count_stmt)
+    stmt = stmt.limit(limit).offset((page-1)*limit)
+    result = await session.execute(stmt)
+    products = result.scalars().all()
+    return {
+          "total": total,
+          "page": page,
+          "limit": limit,
+          "items": products
+    }
